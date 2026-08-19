@@ -1,18 +1,19 @@
 APP_NAME=Ahime
-APP_ENV=production
+APP_ENV=local
 APP_KEY=base64:jARC20rPV4+obFhiYGucpeKVQCawhVr3WX4Dz5kXWgI=
-APP_DEBUG=false
+APP_DEBUG=true
 APP_TIMEZONE=UTC
 APP_URL=localhost/api
 
-# TiDB Cloud (connexion chiffrée TLS obligatoire)
+# Base MySQL locale (WAMP), sans TLS. A copier vers .env pour developper
+# en local — voir README pour la config TiDB Cloud utilisee en production.
 DB_CONNECTION=mysql
-DB_HOST=gateway01.eu-central-1.prod.aws.tidbcloud.com
-DB_PORT=4000
+DB_HOST=127.0.0.1
+DB_PORT=3306
 DB_DATABASE=ahime
-DB_USERNAME=82uF9YAWVYqdK5L.root
-DB_PASSWORD=SQD3Xeykw55nLM22
-DB_SSL=true
+DB_USERNAME=root
+DB_PASSWORD=
+DB_SSL=false
 
 CACHE_DRIVER=file
 QUEUE_CONNECTION=sync

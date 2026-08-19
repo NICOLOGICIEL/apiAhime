@@ -3,7 +3,7 @@
 !/.env.*
 !/.env.example
 .phpunit.result.cache
-.envv
+!.envv
 public/test_cors.php
 Homestead.json
 Homestead.yaml
