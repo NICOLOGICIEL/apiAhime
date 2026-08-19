@@ -2,9 +2,17 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+//use Illuminate\Support\Facades\Route;
+//use App\Http\Controllers\ApiController;
+
+
 $router->get('/', function () {
     return response()->json(['name' => 'Ahime API', 'status' => 'ok']);
 });
+
+//Route API
+//Route::post('/api/action', [ApiController::class, 'action']);
+$router->post('action', 'ApiController@action');
 
 // Hôtels
 $router->get('hotels', 'HotelController@index');
