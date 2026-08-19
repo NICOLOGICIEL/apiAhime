@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+    # Sur un hébergement mutualisé où la racine du domaine (ou sous-domaine)
+    # ne peut pas être pointée directement vers /public (cas LWS classique),
+    # ce fichier fait vivre l'appli dans un sous-dossier (ex: /api) tout en
+    # servant réellement depuis /api/public.
+    RewriteEngine On
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
