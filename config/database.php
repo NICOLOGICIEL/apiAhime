@@ -20,9 +20,8 @@ return [
             'strict' => env('DB_STRICT_MODE', true),
             'engine' => env('DB_ENGINE'),
             'timezone' => env('DB_TIMEZONE', '+00:00'),
-            // TiDB Cloud exige une connexion chiffrée (TLS) ; en local (WAMP),
-            // le MySQL de dev n'a pas de certificat TLS valide donc DB_SSL
-            // doit rester a false (voir .envv).
+            // TiDB Cloud exige une connexion chiffrée (TLS) ;
+            //  En local (WAMP),le MySQL de dev n'a pas de certificat TLS valide donc DB_SSL doit rester a false (voir .envv).
             'options' => (extension_loaded('pdo_mysql') && env('DB_SSL', false)) ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', __DIR__.'/isrgrootx1.pem'),
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,

@@ -4,18 +4,18 @@
 !/.env.example
 .phpunit.result.cache
 !.envv
-public/test_cors.php
+!public/test_cors.php
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
 /.vscode
 
-/storage/framework/cache/*
+!/storage/framework/cache/*
 !/storage/framework/cache/.gitkeep
-/storage/framework/sessions/*
+!/storage/framework/sessions/*
 !/storage/framework/sessions/.gitkeep
-/storage/framework/views/*
+!/storage/framework/views/*
 !/storage/framework/views/.gitkeep
-/storage/logs/*
+!/storage/logs/*
 !/storage/logs/.gitkeep
