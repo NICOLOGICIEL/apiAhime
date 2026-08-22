@@ -4,15 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Concerns\GuardedApi;
 use Illuminate\Support\Facades\Validator;
 
 class ApiController extends \Laravel\Lumen\Routing\Controller
 {
+    use GuardedApi;
+
     public function action(Request $request)
     {
         $data = $request->all();
 
         $action = $data['data_action'] ?? null;
+
+        // Securite : cle d API obligatoire (header X-API-Key) + restriction lecture seule.
+        $response = $this->guard($request, $data);
+        if ($response !== null) {
+            return $response;
+        }
+
 
         if (!$action) {
             return response()->json(['error' => 'data_action requis'], 400);

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "commit_message": {
+    "prompt": "À partir de maintenant, lorsque j'écrirai le message \"commit + push\", tu devras analyser nos derniers échanges pour identifier le changement effectué. Tu rédigeras ensuite un titre de commit clair, concis et en français, puis tu simuleras le push vers la branche origin."
+  }
+}

@@ -108,6 +108,35 @@ Remplacent les appels `ReqMultiExec` de `getdataAll()` / `getdataVille()`.
 | GET | `/api/categories` | Liste des catégories de métier |
 | GET | `/api/compagnies` | Liste des compagnies de transport (`IDCOMPAGNIE`, `Nom`) |
 
+## Endpoint generique SQL (contrat historique, POST /api/action)  
+ 
+Le client Flutter actuel dialogue encore via l'ancien contrat  
+data_action (ReqExec, ReqMultiExec, EnvoiRequete + chaine(s) SQL).  
+Cet endpoint a ete conserve pour la compatibilite mais il est desormais  
+securise (trait App\Http\Controllers\Concerns\GuardedApi) :  
+ 
+1. **Cle d'API obligatoire** : chaque requete doit porter le header  
+   X-API-Key, dont la valeur doit correspondre a API_ACCESS_KEY dans  
+   .env (comparaison via hash_equals, anti timing-attack).  
+   - Cle absente ou invalide -> 401 ;  
+   - API_ACCESS_KEY vide/absente cote serveur -> 500 (endpoint desactive).  
+2. **Lecture seule** : seules des requetes SELECT simples sont acceptees  
+   (un seul statement, aucun mot-cle d'ecriture/DD : INSERT, UPDATE,  
+   DELETE, DROP, ALTER, TRUNCATE, CREATE, GRANT, OUTFILE, LOAD_FILE, acces  
+   a INFORMATION_SCHEMA / mysql.) -> 403 sinon. Le controle s'applique a  
+   tous les champs Requete, Requete1..3.  
+ 
+Exemple :  
+ 
+```bash  
+curl -X POST https://ahime-ci.com/api/action -H 'X-API-Key: <votre cle>' -d 'data_action=ReqExec' --data-urlencode 'Requete=SELECT COUNT(*) AS n FROM hotel'  
+```  
+ 
+> **Cle en production** : definissez une API_ACCESS_KEY differente de celle  
+> du local et communiquez-la uniquement au client Flutter. Le filtrage par  
+> mots-cles est une defense en profondeur : a terme, l'objectif reste de  
+> supprimer ce contrat au profit des endpoints REST parametres ci-dessus.  
+
 ## Déploiement (hébergement mutualisé LWS)
 
 L'appli est prévue pour vivre dans un sous-dossier `api/` à la racine du
@@ -146,7 +175,7 @@ la racine directement sur `public/` (ex: `api.ahime-ci.com` → dossier
    FTP/SSH dans `www/api/` — `.env` n'est jamais committé (voir
    `.gitignore`), il doit être déposé manuellement sur le serveur.
 4. **`.env` de production** : `APP_ENV=production`, `APP_DEBUG=false`,
-   `APP_KEY` renseigné, et les identifiants MySQL fournis par LWS
+   `APP_KEY` renseigné, et les identifiants MySQL fournis par LWS. Y renseigner aussi une cle API_ACCESS_KEY distincte de celle du local (voir la section Endpoint generique SQL)
    (host généralement `127.0.0.1`, base/utilisateur au format
    `xxxx000000`). Déjà en place dans `.env` local — à recopier tel quel
    sur le serveur.
@@ -172,6 +201,4 @@ la racine directement sur `public/` (ex: `api.ahime-ci.com` → dossier
   (`page_artisancommentaire.dart`) — mais cet écran est aujourd'hui une
   maquette statique (contenu factice, aucun appel réseau), donc ces
   routes ne sont pas encore consommées.
-- Aucune authentification n'est mise en place (l'app actuelle n'en a pas
-  non plus). À ajouter avant toute mise en production si les endpoints
-  d'écriture (`POST .../notations`) sont exposés publiquement.
+- L'endpoint generique POST /api/action est desormais protege par une cle d API (header X-API-Key / variable API_ACCESS_KEY) et restreint en lecture seule (SELECT simples uniquement), voir la section Endpoint generique SQL. Les endpoints REST metier restent publics ; les endpoints d'ecriture (POST .../notations) n'ont toujours aucune authentification : a ajouter avant toute mise en production s'ils sont exposes publiquement.

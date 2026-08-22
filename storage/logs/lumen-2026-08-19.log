@@ -1,0 +1,8 @@
+[2026-08-19 16:45:42] production.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/wamp64/www/api/vendor/symfony/console/Application.php:745)
+[stacktrace]
+#0 C:/wamp64/www/api/vendor/symfony/console/Application.php(266): Symfony/Component/Console/Application->find()
+#1 C:/wamp64/www/api/vendor/symfony/console/Application.php(175): Symfony/Component/Console/Application->doRun()
+#2 C:/wamp64/www/api/vendor/laravel/lumen-framework/src/Console/Kernel.php(160): Symfony/Component/Console/Application->run()
+#3 C:/wamp64/www/api/artisan(32): Laravel/Lumen/Console/Kernel->handle()
+#4 {main}
+"} 
