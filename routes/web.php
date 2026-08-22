@@ -19,6 +19,13 @@ $router->get('hotels', 'HotelController@index');
 $router->get('hotels/{id:\d+}', 'HotelController@show');
 $router->get('hotels/{id:\d+}/images', 'HotelController@images');
 
+// Images hôtel (CRUD)
+$router->get('images', 'ImageHotelController@index');
+$router->get('images/{id:\d+}', 'ImageHotelController@show');
+$router->post('images', 'ImageHotelController@store');
+$router->put('images/{id:\d+}', 'ImageHotelController@update');
+$router->delete('images/{id:\d+}', 'ImageHotelController@destroy');
+
 // Artisans
 $router->get('artisans', 'ArtisanController@index');
 $router->get('artisans/{id:\d+}', 'ArtisanController@show');
