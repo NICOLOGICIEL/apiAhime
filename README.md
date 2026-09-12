@@ -185,6 +185,15 @@ la racine directement sur `public/` (ex: `api.ahime-ci.com` → dossier
 6. **Vérification** : `https://ahime-ci.com/api/` doit renvoyer
    `{"name":"Ahime API","status":"ok"}`, puis tester un endpoint réel
    (`/api/villes`) et un POST (`/api/artisans/{id}/notations`).
+7. **Cache Redis** (`CACHE_DRIVER=redis`, `REDIS_HOST=127.0.0.1`,
+   `REDIS_PORT=6379`) : mis en cache les resultats des SELECT de
+   l'endpoint generique `/api/action` (voir `ApiController::cachedSelect`).
+   Sur un hebergement mutualise, aucun daemon Redis n'est generalement
+   installe par defaut — a verifier/activer aupres de LWS avant de compter
+   dessus. Si Redis est indisponible, `cachedSelect` degrade proprement
+   (fallback direct sur `DB::select`, exception loggee) : l'API continue de
+   repondre, simplement sans mise en cache. Pour desactiver le cache
+   explicitement, mettre `API_CACHE_TTL=0`.
 
 ## Notes sur le périmètre
 

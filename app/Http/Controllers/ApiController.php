@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Concerns\GuardedApi;
 use Illuminate\Support\Facades\Validator;
@@ -55,9 +56,9 @@ class ApiController extends \Laravel\Lumen\Routing\Controller
         $sqlTotal = $data['Requete2'] ?? null;
 
         try {
-            $results = DB::select($sql);
+            $results = $this->cachedSelect($sql);
 
-            $total = $sqlTotal ? count(DB::select($sqlTotal)) : count($results);
+            $total = $sqlTotal ? count($this->cachedSelect($sqlTotal)) : count($results);
 
             return response()->json([
                 'result' => $results,
@@ -88,9 +89,9 @@ class ApiController extends \Laravel\Lumen\Routing\Controller
         $sql3 = $data['Requete3'] ?? null;
 
         try {
-            $result1 = DB::select($sql1);
-            $result2 = $sql2 ? DB::select($sql2) : [];
-            $result3 = $sql3 ? DB::select($sql3) : [];
+            $result1 = $this->cachedSelect($sql1);
+            $result2 = $sql2 ? $this->cachedSelect($sql2) : [];
+            $result3 = $sql3 ? $this->cachedSelect($sql3) : [];
 
             $total = count($result1) + count($result2) + count($result3);
 
@@ -126,7 +127,7 @@ class ApiController extends \Laravel\Lumen\Routing\Controller
         $sql = $data['Requete'];
 
         try {
-            $results = DB::select($sql);
+            $results = $this->cachedSelect($sql);
 
             return response()->json($results);
         } catch (\Exception $e) {
@@ -134,6 +135,35 @@ class ApiController extends \Laravel\Lumen\Routing\Controller
                 'error' => 'Erreur SQL',
                 'message' => $e->getMessage(),
             ], 500);
+        }
+    }
+
+    /**
+     * Execute un SELECT en passant par le cache Redis (cle = hash du SQL).
+     * GuardedApi garantit que $sql est un SELECT simple et sans effet de bord,
+     * ce qui rend la mise en cache par contenu de la requete sure.
+     */
+    private function cachedSelect(string $sql): array
+    {
+        $ttl = (int) env('API_CACHE_TTL', 0);
+
+        if ($ttl <= 0) {
+            return DB::select($sql);
+        }
+
+        $key = 'sql_select:'.hash('sha256', $sql);
+
+        try {
+            return Cache::remember($key, $ttl, function () use ($sql) {
+                return DB::select($sql);
+            });
+        } catch (\Throwable $e) {
+            // Redis indisponible : on degrade sans cache plutot que de faire
+            // echouer l'endpoint (utile en particulier en hebergement mutualise
+            // ou le service Redis n'est pas garanti).
+            report($e);
+
+            return DB::select($sql);
         }
     }
 }

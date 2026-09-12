@@ -24,6 +24,9 @@ $app = new Laravel\Lumen\Application(
 $app->withFacades();
 $app->withEloquent();
 
+$app->configure('cache');
+$app->configure('database');
+
 // `$this->validate()` (trait ValidatesRequests, utilisé par les endpoints
 // d'écriture POST .../notations) fonctionne sans registration manuelle :
 // Lumen résout `translator`/`validator` à la demande via son propre
@@ -54,6 +57,8 @@ $app->singleton(
 |--------------------------------------------------------------------------
 */
 
+$app->register(Illuminate\Redis\RedisServiceProvider::class);
+$app->register(Illuminate\Cache\CacheServiceProvider::class);
 $app->register(App\Providers\AppServiceProvider::class);
 
 /*
