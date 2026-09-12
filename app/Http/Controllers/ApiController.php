@@ -44,6 +44,7 @@ class ApiController extends \Laravel\Lumen\Routing\Controller
     {
         $validator = Validator::make($data, [
             'Requete' => 'required|string',
+            'Requete2' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -51,11 +52,12 @@ class ApiController extends \Laravel\Lumen\Routing\Controller
         }
 
         $sql = $data['Requete'];
+        $sqlTotal = $data['Requete2'] ?? null;
 
         try {
             $results = DB::select($sql);
 
-            $total = count($results);
+            $total = $sqlTotal ? count(DB::select($sqlTotal)) : count($results);
 
             return response()->json([
                 'result' => $results,
