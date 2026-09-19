@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ImageHotel;
-use Illuminate\Database\Query\Builder;
+//use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

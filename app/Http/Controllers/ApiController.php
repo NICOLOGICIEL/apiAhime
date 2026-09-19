@@ -72,47 +72,53 @@ class ApiController extends \Laravel\Lumen\Routing\Controller
         }
     }
 
-    private function reqMultiExec(array $data)
-    {
-        $validator = Validator::make($data, [
-            'Requete1' => 'required|string',
-            'Requete2' => 'nullable|string',
-            'Requete3' => 'nullable|string',
-        ]);
+private function reqMultiExec(array $data)
+{
+    $validator = Validator::make($data, [
+        'Requete1' => 'required|string',
+        'Requete2' => 'nullable|string',
+        'Requete3' => 'nullable|string',
+        'Requete4' => 'nullable|string',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
-        }
-
-        $sql1 = $data['Requete1'];
-        $sql2 = $data['Requete2'] ?? null;
-        $sql3 = $data['Requete3'] ?? null;
-
-        try {
-            $result1 = $this->cachedSelect($sql1);
-            $result2 = $sql2 ? $this->cachedSelect($sql2) : [];
-            $result3 = $sql3 ? $this->cachedSelect($sql3) : [];
-
-            $total = count($result1) + count($result2) + count($result3);
-
-            $response = [
-                'result1' => $result1,
-                'result2' => $result2,
-                'total' => $total,
-            ];
-
-            if ($sql3) {
-                $response['result3'] = $result3;
-            }
-
-            return response()->json($response);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Erreur SQL',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()], 422);
     }
+
+    $sql1 = $data['Requete1'];
+    $sql2 = $data['Requete2'] ?? null;
+    $sql3 = $data['Requete3'] ?? null;
+    $sql4 = $data['Requete4'] ?? null;
+
+    try {
+        $result1 = $this->cachedSelect($sql1);
+        $result2 = $sql2 ? $this->cachedSelect($sql2) : [];
+        $result3 = $sql3 ? $this->cachedSelect($sql3) : [];
+        $result4 = $sql4 ? $this->cachedSelect($sql4) : [];
+
+        $total = count($result1) + count($result2) + count($result3) + count($result4);
+
+        $response = [
+            'result1' => $result1,
+            'result2' => $result2,
+            'total' => $total,
+        ];
+
+        if ($sql3) {
+            $response['result3'] = $result3;
+        }
+        if ($sql4) {
+            $response['result4'] = $result4;
+        }
+
+        return response()->json($response);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Erreur SQL',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+}
 
     private function envoiRequete(array $data)
     {
