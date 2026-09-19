@@ -29,8 +29,18 @@ mysql -u root -p -e "CREATE DATABASE c0ahi1745 CHARACTER SET utf8mb4"
 mysql -u root -p c0ahi1745 < ../c0ahi1745.sql
 ```
 
-Renseigner `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` dans `.env`, puis
-démarrer le serveur de développement :
+Renseigner la configuration de base de données dans `.env` selon
+l'environnement cible :
+
+- **Local (WAMP/MySQL)** : `APP_ENV=local`, puis `DB_DATABASE`,
+  `DB_USERNAME`, `DB_PASSWORD`
+- **Production (TiDB Cloud)** : `APP_ENV=production`, puis les variables
+  `TIDB_HOST`, `TIDB_PORT`, `TIDB_DATABASE`, `TIDB_USERNAME`,
+  `TIDB_PASSWORD`, `TIDB_SSL` (voir `.env` pour les valeurs actuelles)
+
+La bascule est automatique via `config/database.php` selon `APP_ENV`.
+
+Puis démarrer le serveur de développement :
 
 ```bash
 php -S localhost:8000 -t public
@@ -103,10 +113,21 @@ Remplacent les appels `ReqMultiExec` de `getdataAll()` / `getdataVille()`.
 
 | Méthode | Route | Description |
 |---|---|---|
-| GET | `/api/villes` | Liste des villes (table `ville`) |
+| GET | `/api/villes-reference` | Liste des villes (table `ville`) pour menus déroulants |
 | GET | `/api/metiers` | Liste des métiers (table `metier`) |
 | GET | `/api/categories` | Liste des catégories de métier |
 | GET | `/api/compagnies` | Liste des compagnies de transport (`IDCOMPAGNIE`, `Nom`) |
+
+### Villes (CRUD complet)
+Endpoints REST pour la gestion des villes (table `ville`).
+
+| Méthode | Route | Description |
+|---|---|---|
+| GET | `/api/villes` | Liste paginée des villes |
+| GET | `/api/villes/{id}` | Détail d'une ville |
+| POST | `/api/villes` | Crée une ville : `nom`, `code_postal` (optionnel) |
+| PUT | `/api/villes/{id}` | Met à jour une ville |
+| DELETE | `/api/villes/{id}` | Supprime une ville |
 
 ## Endpoint generique SQL (contrat historique, POST /api/action)  
  
