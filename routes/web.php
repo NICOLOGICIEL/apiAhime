@@ -39,8 +39,15 @@ $router->get('transports/departs/{departId:\d+}/escales', 'TransportController@e
 $router->get('compagnies/{compagnieId:\d+}/notations', 'TransportController@compagnieNotations');
 $router->post('compagnies/{compagnieId:\d+}/notations', 'TransportController@storeCompagnieNotation');
 
+// Villes (CRUD)
+$router->get('villes', 'VilleController@index');
+$router->get('villes/{id:\d+}', 'VilleController@show');
+$router->post('villes', 'VilleController@store');
+$router->put('villes/{id:\d+}', 'VilleController@update');
+$router->delete('villes/{id:\d+}', 'VilleController@destroy');
+
 // Listes de référence (menus déroulants de recherche)
-$router->get('villes', 'ReferenceController@villes');
+$router->get('villes-reference', 'ReferenceController@villes');
 $router->get('metiers', 'ReferenceController@metiers');
 $router->get('categories', 'ReferenceController@categories');
 $router->get('compagnies', 'ReferenceController@compagnies');
